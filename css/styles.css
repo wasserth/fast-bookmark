@@ -1,0 +1,21 @@
+body {
+    height: 135px;
+    background-color: #EFEFEF;
+    width: 400px;
+}
+
+#notifications {
+    margin-bottom: 5px;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.select2 {
+    width: 300px;
+}
+
+ul.select2-results {
+ max-height: 70px;
+}

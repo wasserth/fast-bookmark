@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="select2/select2.css" rel="stylesheet"/>
+        <script src="select2/select2.min.js"></script>
+        
+        <link href="css/styles.css" rel="stylesheet">
+        <script src="popup.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            
+            <div id="notifications" class="text-danger" style="display: none"></div>
+            
+            <form class="form form-horizontal">
+                <div class="form-group">
+                    <label for="select-box" class="col-xs-2 control-label">Folder</label>
+                    <div class="col-xs-10">
+                        <select id="select-box" class="select2">
+                            <option value="" selected>Choose folder...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputTitle" class="col-xs-2 control-label">Title</label>
+                    <div class="col-xs-10">
+                        <input type="text" class="form-control input-sm" id="inputTitle" placeholder="title">
+                    </div>
+                </div>
+                <button id="submitBtn" type="submit" class="btn btn-default pull-right">Submit</button>
+            </form>
+
+        </div>
+    </body>
+</html>
