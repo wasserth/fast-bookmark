@@ -2,6 +2,7 @@ body {
     height: 135px;
     background-color: #EFEFEF;
     width: 400px;
+    min-height: 400px;
 }
 
 #notifications {
@@ -17,5 +18,5 @@ body {
 }
 
 ul.select2-results {
- max-height: 70px;
+ max-height: 300px;
 }
