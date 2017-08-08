@@ -1,6 +1,5 @@
 var folders;
 var homeFolderId = "1"; //"Lesezeichenleiste";
-
 $(function() {
 
     folders = new Array();
@@ -100,18 +99,35 @@ function buildSelectOptions() {
     var query = "";
     chrome.bookmarks.getTree(
             function(bookmarkTreeNodes) {
-                processArrayOfNodes(bookmarkTreeNodes, query);
+                processArrayOfNodes(bookmarkTreeNodes, query,[]);
                 for (i = 0; i < folders.length; i++) {
-                    $("#select-box").append($("<option value=" + folders[i].id + ">" + folders[i].title + "</option>"));
+                    var text = folders[i].title;
+                    if (folders[i].path && folders[i].path.length)
+                        text += ' (' + folders[i].path + ')';
+                    $("#select-box").append($("<option value=" + folders[i].id + ">" + text + "</option>"));
                 }
-                $(".select2").select2();
+                $(".select2").select2({matcher: matcher});
             });
+}
+
+var r = new RegExp(/\s\(.*\)?$/);
+function matcher(params,data)
+{
+    if ($.trim(params) === '') {
+        return data;
+    }
+
+    // TODO: Smarter regexp matching
+    var matches = data.match(r);
+    if (matches)
+        data = data.substr(0,matches.index);
+    return data.toLowerCase().indexOf(params.toLowerCase()) >= 0;
 }
 
 function findFolderNode(query, callback) {
     chrome.bookmarks.getTree(
             function(bookmarkTreeNodes) {
-                processArrayOfNodes(bookmarkTreeNodes, query);
+                processArrayOfNodes(bookmarkTreeNodes, query,[]);
                 if (folders.length === 0) {
                     $("#notifications").show();
                     $("#notifications").html('Folder not found');
@@ -121,21 +137,29 @@ function findFolderNode(query, callback) {
             });
 }
 
-function processArrayOfNodes(bookmarkNodes, query) {
+function processArrayOfNodes(bookmarkNodes, query,parentNodes) {
     for (var i = 0; i < bookmarkNodes.length; i++) {
-        processNode(bookmarkNodes[i], query);
+        var tempParentNodes = parentNodes.slice();
+        processNode(bookmarkNodes[i], query,tempParentNodes);
     }
 }
 
-function processNode(bookmarkNode, query) {
+function processNode(bookmarkNode, query,parentNodes) {
     if (!bookmarkNode.url) {
         if (query === ""
                 || (query.title && bookmarkNode.title === query.title)
                 || (query.id && bookmarkNode.id === query.id)) {
-            folders.push({"title": bookmarkNode.title, "id": bookmarkNode.id});
+            var folderPath = parentNodes.map(function(node) {
+                return node.title;
+            }).join('\\');
+            folders.push({"title": bookmarkNode.title, "id": bookmarkNode.id, path: folderPath});
         }
         if (bookmarkNode.children && bookmarkNode.children.length > 0) {
-            processArrayOfNodes(bookmarkNode.children, query);
+            if (bookmarkNode.title.length)
+                parentNodes.push(bookmarkNode);
+            processArrayOfNodes(bookmarkNode.children, query,parentNodes);
         }
     }
 }
+
+
